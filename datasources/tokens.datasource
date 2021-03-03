@@ -3,5 +3,5 @@ SCHEMA >
     address String,
     symbol Nullable(String) DEFAULT NULL
 
-ENGINE "JOIN(ANY,LEFT,address)"
+KEY address
 
