@@ -1,0 +1,127 @@
+NODE transactions_per_day
+SQL >
+
+    SELECT 
+        toDate(block_timestamp) AS day, 
+        COUNT(*) AS number_transactions, 
+        joinGet('ETH_USD_join_by_date','date', day) AS eth_usd, 
+        round(avg(gas_used * (gas_price / exp10(18))) * eth_usd, 2) AS `avg_fee_$`, 
+        round(max(gas_used * (gas_price / exp10(18))) * eth_usd, 2) AS `max_fee_$`, 
+        round(min(gas_used * (gas_price / exp10(18))) * eth_usd, 2) AS `min_fee_$`
+    FROM transactions 
+    GROUP BY day, eth_usd
+    ORDER BY day ASC
+
+
+NODE Top100_tokens_minted_and_burned
+SQL >
+
+    SELECT 
+        token_address, 
+        joinGet('tokens_join_by_address', 'address',token_address) as symbol, 
+        countIf(from_address = '0x0000000000000000000000000000000000000000') AS minted, 
+        countIf(to_address = '0x0000000000000000000000000000000000000000') AS burned, 
+        if(minted > 0, log(minted), 0) AS `log(minted)`, 
+        if(burned > 0, -1 * log(burned), 0) AS `log(burned)`, 
+        minted + burned AS total_operations
+    FROM token_transactions
+    WHERE 
+      from_address = '0x0000000000000000000000000000000000000000'
+      OR to_address = '0x0000000000000000000000000000000000000000'
+    GROUP BY token_address, symbol
+    ORDER BY total_operations DESC
+    LIMIT 30
+
+
+
+NODE Top_30_most_used_address_optimize
+SQL >
+
+    WITH(
+       SELECT 
+          arrayMap(x -> sipHash64(x), arrayConcat(topK(20)(from_address), topK(20)(to_address))),
+          count()
+      FROM transactions
+    ) AS tr
+
+
+    SELECT
+       address,
+       count() as number_transactions,
+       round(number_transactions/tupleElement(tr,2)*100, 2) as percentatge
+    FROM (
+      SELECT from_address as address FROM transactions 
+      UNION ALL
+      SELECT to_address as address FROM transactions
+    )
+    WHERE has(tupleElement(tr,1), sipHash64(address))
+    GROUP BY address
+    ORDER BY number_transactions DESC
+    LIMIT 30
+
+
+
+NODE Top_30_most_used_address_half_optimize
+SQL >
+
+    WITH(
+      SELECT COUNT(*) FROM transactions
+    ) as total
+
+    SELECT 
+        address,
+        COUNT(*) as number_transactions,
+        round(number_transactions/total*100,2) as percentatge,
+        total
+    FROM (
+       SELECT from_address as address FROM transactions
+      UNION ALL
+      SELECT to_address as address FROM transactions
+    )
+    WHERE address IN (
+      SELECT 
+        arrayJoin(topK(30)(address))
+      FROM (
+         SELECT from_address as address FROM transactions
+        UNION ALL
+        SELECT to_address as address FROM transactions
+      )
+    )
+    GROUP BY address
+    ORDER BY number_transactions DESC
+
+
+
+NODE Top_30_most_used_address_bad_optimize
+SQL >
+
+    WITH(
+      SELECT COUNT(*) FROM transactions
+    ) as total
+
+    SELECT 
+        address,
+        COUNT(*) as number_transactions,
+        round(number_transactions/total*100,2) as percentatge
+    FROM (
+       SELECT from_address as address FROM transactions
+       UNION ALL
+       SELECT to_address as address FROM transactions
+    )
+    GROUP BY address
+    ORDER BY number_transactions DESC
+    LIMIT 30
+
+NODE Miners_adding_tx_directly
+DESCRIPTION> 
+  These miners are adding transactions and being payed outside of the blockchain
+SQL >
+
+    SELECT from_address as miner, count() as tx
+    FROM transactions 
+    WHERE gas_price = 0
+    GROUP BY from_address
+    HAVING tx > 100
+    ORDER BY tx DESC
+
+

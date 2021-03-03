@@ -1,0 +1,6 @@
+
+SCHEMA >
+    date Date,
+    price Float32
+
+KEY date
