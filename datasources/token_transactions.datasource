@@ -8,6 +8,6 @@ SCHEMA >
     block_timestamp DateTime
 
 ENGINE "MergeTree"
-ENGINE_PARTITION_KEY "toYear(block_timestamp)"
-ENGINE_SORTING_KEY "block_timestamp, cityHash64(to_address), cityHash64(from_address)"
-ENGINE_SAMPLING_KEY "cityHash64(to_address), cityHash64(from_address)"
+ENGINE_PARTITION_KEY "toDayOfMonth(block_timestamp)"
+ENGINE_SORTING_KEY "block_timestamp"
+ENGINE_SAMPLING_KEY "toDayOfMonth(block)"
