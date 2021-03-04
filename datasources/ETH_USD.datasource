@@ -1,6 +1,6 @@
 
 SCHEMA >
-    date Date,
+    day Date,
     price Float32
 
-KEY date
+KEY day

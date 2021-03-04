@@ -4,7 +4,7 @@ SQL >
     SELECT 
         toDate(block_timestamp) AS day, 
         COUNT(*) AS number_transactions, 
-        joinGet('ETH_USD_join_by_date','date', day) AS eth_usd, 
+        joinGet('ETH_USD_join_by_day','price', day) AS eth_usd, 
         round(avg(gas_used * (gas_price / exp10(18))) * eth_usd, 2) AS `avg_fee_$`, 
         round(max(gas_used * (gas_price / exp10(18))) * eth_usd, 2) AS `max_fee_$`, 
         round(min(gas_used * (gas_price / exp10(18))) * eth_usd, 2) AS `min_fee_$`
@@ -18,7 +18,7 @@ SQL >
 
     SELECT 
         token_address, 
-        joinGet('tokens_join_by_address', 'address',token_address) as symbol, 
+        joinGet('tokens_join_by_address', 'symbol',token_address) as symbol, 
         countIf(from_address = '0x0000000000000000000000000000000000000000') AS minted, 
         countIf(to_address = '0x0000000000000000000000000000000000000000') AS burned, 
         if(minted > 0, log(minted), 0) AS `log(minted)`, 
