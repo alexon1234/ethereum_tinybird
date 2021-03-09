@@ -13,11 +13,11 @@
     tb auth
 ```
 
-5. Download the data from [here](https://drive.google.com/file/d/1VaW-2-XwKm8GHCDY2ysloU9knPUR03Js/view?usp=sharing) or you can download the csv from this [kaggle's notebook](https://www.kaggle.com/alexdelamo/ethereum-transactions-january-2021) and extract it into `/datasource/fixtures`.
+5. Download the data from [here](https://drive.google.com/file/d/1t7RR2rAsugM2iq0q21KnxlRp5El0Aki1/view?usp=sharing) or you can download the csv from this [kaggle's notebook](https://www.kaggle.com/alexdelamo/ethereum-transactions-january-2021) and extract it into `/datasource/fixtures`.
 
     In case you want to download the data from Kaggle, you need to download the following csv's/gz:
-    - From the input section, you need to download `ETH_USD.csv` & `tokens.csv` 
-    - From the output section, you need to download `token_transactions.csv.gz` & `transactions.csv.gz`
+    - From the input section, you need to download `ETH_USD.csv`
+    - From the output section, you need to download `tokens.csv`, `token_transactions.csv.gz` and `transactions.csv.gz`
     - Extract the compress files and place them into `/datasource/fixtures`
 
 6. Once you have all the data, your directory should look like this
@@ -26,8 +26,10 @@
 ├── README.md
 ├── datasources
 │   ├── ETH_USD.datasource
+│   ├── blocks.datasource
 │   ├── fixtures
 │   │   ├── ETH_USD.csv
+│   │   ├── blocks.csv
 │   │   ├── token_transactions.csv
 │   │   ├── tokens.csv
 │   │   └── transactions.csv
