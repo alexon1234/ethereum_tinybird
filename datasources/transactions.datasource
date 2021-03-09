@@ -1,15 +1,17 @@
 
 SCHEMA >
-    hash String,
-    to_address String,
-    from_address String,
-    value Int64,
-    block_timestamp DateTime,
-    gas_price Int64,
-    gas_limit Int64,
-    gas_used Int64
+    `hash` String,
+    `to_address` String,
+    `from_address` String,
+    `value` Int64,
+    `block_timestamp` DateTime,
+    `gas_price` Int64,
+    `gas_limit` Int64,
+    `block_number` Int64,
+    `gas_used` Int64,
+    `to_address_hashed` UInt64 MATERIALIZED cityHash64(to_address),
+    `from_address_hashed` UInt64 MATERIALIZED cityHash64(from_address)
 
 ENGINE "MergeTree"
 ENGINE_PARTITION_KEY "toDayOfMonth(block_timestamp)"
 ENGINE_SORTING_KEY "block_timestamp"
-ENGINE_SAMPLING_KEY "toDayOfMonth(block)"

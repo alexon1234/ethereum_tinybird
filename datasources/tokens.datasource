@@ -1,7 +1,9 @@
 
 SCHEMA >
-    address String,
-    symbol Nullable(String) DEFAULT NULL
+    `address` String,
+    `symbol` Nullable(String),
+    `name` String
+
 
 KEY address
 

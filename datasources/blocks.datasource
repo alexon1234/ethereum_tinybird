@@ -1,0 +1,11 @@
+SCHEMA >
+    `timestamp` DateTime,
+    `number` Int64,
+    `miner` String,
+    `difficulty` Int64,
+    `gas_limit` Int64,
+    `gas_used` Int64,
+    `transaction_count` Int32,
+    `size` Int64
+
+KEY number
